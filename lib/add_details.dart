@@ -34,8 +34,7 @@ List<Response>? datalist;
   Future<void> addData(Map<String, dynamic> data) async {
     setState(() => isLoading = true);
     try {
-      // Changed to form-urlencoded as PHP APIs typically expect this format
-      final response = await http.post(
+        final response = await http.post(
         Uri.parse("https://glexas.com/hostel_data/API/test/new_admission_crud.php"),
         body: data, // Send as form data directly
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
