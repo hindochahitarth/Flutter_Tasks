@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:api_tutorial/models/AdmissionModel.dart';
 
+
 class addDetails extends StatefulWidget {
   const addDetails({super.key});
 
@@ -11,7 +12,7 @@ class addDetails extends StatefulWidget {
 }
 
 class _addDetailsState extends State<addDetails> {
-  List<Response>? datalist;
+List<Response>? datalist;
   bool isLoading = false;
 
   Future<void> fetchData() async {
@@ -33,20 +34,26 @@ class _addDetailsState extends State<addDetails> {
   Future<void> addData(Map<String, dynamic> data) async {
     setState(() => isLoading = true);
     try {
+      // Changed to form-urlencoded as PHP APIs typically expect this format
       final response = await http.post(
         Uri.parse("https://glexas.com/hostel_data/API/test/new_admission_crud.php"),
-        body: jsonEncode(data), // Encode the data as JSON
-        headers: {'Content-Type': 'application/json'}, // Add JSON header
+        body: data, // Send as form data directly
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
+
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Data added successfully')),
         );
-        fetchData();
+        await fetchData(); // Wait for fetch to complete before rebuilding
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Server error: ${response.body}')),
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error adding data: $e')),
+        SnackBar(content: Text('Network error: $e')),
       );
     } finally {
       setState(() => isLoading = false);
@@ -58,8 +65,8 @@ class _addDetailsState extends State<addDetails> {
     try {
       final response = await http.put(
         Uri.parse("https://glexas.com/hostel_data/API/test/new_admission_crud.php"),
-        body: jsonEncode(data), // Encode the data as JSON
-        headers: {'Content-Type': 'application/json'}, // Add JSON header
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json'},
       );
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,8 +88,8 @@ class _addDetailsState extends State<addDetails> {
     try {
       final response = await http.delete(
         Uri.parse("https://glexas.com/hostel_data/API/test/new_admission_crud.php"),
-        body: jsonEncode({'registration_main_id': registrationMainId}), // Encode the data as JSON
-        headers: {'Content-Type': 'application/json'}, // Add JSON header
+        body: jsonEncode({'registration_main_id': registrationMainId}),
+        headers: {'Content-Type': 'application/json'},
       );
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -105,7 +112,6 @@ class _addDetailsState extends State<addDetails> {
     fetchData();
   }
 
-  // Show add dialog
   void _showAddDialog() {
     final userCodeController = TextEditingController();
     final firstNameController = TextEditingController();
@@ -179,7 +185,7 @@ class _addDetailsState extends State<addDetails> {
                 'email': emailController.text,
               });
 
-              Navigator.pop(context);
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Add'),
           ),
@@ -188,7 +194,6 @@ class _addDetailsState extends State<addDetails> {
     );
   }
 
-  // Show update dialog
   void _showUpdateDialog(Response item) {
     final userCodeController = TextEditingController(text: item.userCode);
     final firstNameController = TextEditingController(text: item.firstName);
@@ -263,7 +268,7 @@ class _addDetailsState extends State<addDetails> {
                 'email': emailController.text,
               });
 
-              Navigator.pop(context);
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Update'),
           ),
