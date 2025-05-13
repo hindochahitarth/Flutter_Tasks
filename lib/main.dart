@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
-//import 'package:api_tutorial/view_admissions.dart';
-import 'package:api_tutorial/add_details.dart';
+import 'package:api_tutorial/Task_4.dart';
+import 'package:api_tutorial/AdmissionApp.dart';
+import 'package:api_tutorial/Task_5.dart';
+import 'package:api_tutorial/LoginPage.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -9,34 +10,88 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Task Menu',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const addDetails(),
+      home: const HomePage(),
     );
   }
 }
 
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Task Menu"),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MyMenuButton(
+              title: "Login",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
+            ),
+            MyMenuButton(
+              title: "Task 4",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage2()),
+                );
+              },
+            ),
+            MyMenuButton(
+              title: "Task 5",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Task_5_Images()),
+                );
+              },
+            ),
+           ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyMenuButton extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const MyMenuButton({super.key, required this.title, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          textStyle: const TextStyle(fontSize: 18),
+        ),
+        child: Text(title),
+      ),
+    );
+  }
+}
